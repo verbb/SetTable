@@ -1,0 +1,52 @@
+.setTable {
+	position: relative;
+	margin-bottom: 10px;
+	border-radius: 3px;
+	background: #f9fafa;
+	padding: 1px 0 0 0;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+
+	outline: none;
+	-webkit-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.setTable thead {
+	border-radius: 2px 2px 0 0;
+	background: #eef0f1;
+	color: #b9bfc6;
+}
+
+.setTable thead tr th:first-child {
+	border-left: 1px #DFE0E0 solid;
+	border-radius: 2px 0 0 0;
+}
+
+.setTable thead tr th:last-child {
+	border-right: 1px #DFE0E0 solid;
+	border-radius: 0 2px 0 0;
+}
+
+.setTable thead tr th,
+.setTable tbody tr td {
+	padding-left: 14px;
+}
+
+.setTable thead tr th:last-child,
+.setTable tbody tr td:last-child {
+	padding-right: 14px;
+}
+
+
+
+#types-SetTable-tableData tbody tr td:not(.textual):not(.action) {
+	background: #f9fafa;
+}
+
+#types-SetTable-tableData tbody tr td:not(.textual) textarea {
+	background: transparent;
+}

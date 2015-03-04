@@ -1,0 +1,52 @@
+{% import "_includes/forms" as forms %}
+
+{% includeCssResource 'settable/css/settable.css' %}
+
+<div class="setTable">
+    <table class="data fullwidth collapsible">
+        <thead>
+            <tr>
+                {% for col in cols %}
+                    <th scope="col" class="header">{{ col.heading ? col.heading : ' ' }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for rowId, row in rows %}
+                <tr data-id="{{ rowId }}">
+                    {% for colId, col in cols %}
+                        {% set cellName = name~'['~rowId~']['~colId~']' %}
+                        {% set value = (row[colId] is defined ? row[colId] : null) %}
+
+                        <td {% if col.width is defined %}width="{{ col.width }}"{% endif %}>
+                            {% if col.type == 'select' %}
+                                {{ forms.selectField({
+                                    class: 'small',
+                                    id: cellName,
+                                    name: cellName,
+                                    options: col.options,
+                                    value: value,
+                                }) }}
+                            {% elseif col.type == 'checkbox' %}
+                                {{ forms.checkboxField({
+                                    id: cellName,
+                                    name: cellName,
+                                    checked: value,
+                                }) }}
+                            {% elseif col.type == 'label' %}
+                                <input type="hidden" name="{{ cellName }}" value="{{ value }}">
+                                {{ value }}
+                            {% else %}
+                                {{ forms.textField({
+                                    id: cellName,
+                                    name: cellName,
+                                    value: value
+                                }) }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
