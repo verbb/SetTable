@@ -42,11 +42,12 @@
 }
 
 
+/* Settings */
 
-#types-SetTable-tableData tbody tr td:not(.textual):not(.action) {
+table.editable tbody tr td.type-label {
 	background: #f9fafa;
 }
 
-#types-SetTable-tableData tbody tr td:not(.textual) textarea {
+table.editable tbody tr td.type-label textarea {
 	background: transparent;
 }

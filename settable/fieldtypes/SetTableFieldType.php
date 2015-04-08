@@ -73,29 +73,25 @@ class SetTableFieldType extends BaseFieldType
             JsonHelper::encode($columnSettings) .
         ');');
 
-        $columnsField = craft()->templates->renderMacro('_includes/forms', 'editableTableField', array(
-            array(
-                'label'        => Craft::t('Table Columns'),
-                'instructions' => Craft::t('Define the columns your table should have.'),
-                'id'           => 'columns',
-                'name'         => 'columns',
-                'cols'         => $columnSettings,
-                'rows'         => $columns,
-                'addRowLabel'  => Craft::t('Add a column'),
-                'initJs'       => false
-            )
+        $columnsField = craft()->templates->render('settable/settings', array(
+            'label'        => Craft::t('Table Columns'),
+            'instructions' => Craft::t('Define the columns your table should have.'),
+            'id'           => 'columns',
+            'name'         => 'columns',
+            'cols'         => $columnSettings,
+            'rows'         => $columns,
+            'addRowLabel'  => Craft::t('Add a column'),
+            'initJs'       => false
         ));
 
-        $tableDataField = craft()->templates->renderMacro('_includes/forms', 'editableTableField', array(
-            array(
-                'label'        => Craft::t('Table Values'),
-                'instructions' => Craft::t('Define the set values for the field.'),
-                'id'           => 'tableData',
-                'name'         => 'tableData',
-                'cols'         => $columns,
-                'rows'         => $tableData,
-                'initJs'       => false
-            )
+        $tableDataField = craft()->templates->render('settable/settings', array(
+            'label'        => Craft::t('Table Values'),
+            'instructions' => Craft::t('Define the set values for the field.'),
+            'id'           => 'tableData',
+            'name'         => 'tableData',
+            'cols'         => $columns,
+            'rows'         => $tableData,
+            'initJs'       => false
         ));
 
         return $columnsField.$tableDataField;
@@ -107,8 +103,7 @@ class SetTableFieldType extends BaseFieldType
 
         $tableHtml = $this->_getInputHtml($name, $value, false);
 
-        if ($tableHtml)
-        {
+        if ($tableHtml) {
             $input .= $tableHtml;
         }
 
@@ -123,26 +118,31 @@ class SetTableFieldType extends BaseFieldType
 
         $this->model->settings = $settings;
 
-        craft()->fields->saveField($this->model);
+        // Watch our for use in Matrix
+        if ($this->model->context == 'global') {
+            craft()->fields->saveField($this->model);
+        }
+
+        if (is_array($value)) {
+            // Drop the string row keys
+            return array_values($value);
+        }
     }
 
     public function prepValue($value)
     {
-        $tableData = $this->getSettings()->tableData;
-        $columns = $this->getSettings()->columns;
-
-        if (is_array($tableData) && $columns) {
+        if (is_array($value) && ($columns = $this->getSettings()->columns)) {
             // Make the values accessible from both the col IDs and the handles
-            foreach ($tableData as &$row) {
+            foreach ($value as &$row) {
                 foreach ($columns as $colId => $col) {
                     if ($col['handle']) {
                         $row[$col['handle']] = (isset($row[$colId]) ? $row[$colId] : null);
                     }
                 }
             }
-        }
 
-        return $tableData;
+            return $value;
+        }
     }
 
     protected function defineSettings()
@@ -153,17 +153,36 @@ class SetTableFieldType extends BaseFieldType
         );
     }
 
+    public function prepSettings($settings)
+    {
+        if (!isset($settings['tableData'])) {
+            $settings['tableData'] = array();
+        }
+
+        return $settings;
+    }
 
     private function _getInputHtml($name, $value, $static)
     {
         $columns = $this->getSettings()->columns;
+        $tableData = $this->getSettings()->tableData;
 
         if ($columns) {
-
             // Translate the column headings
-            foreach ($columns as $colId => &$column) {
+            foreach ($columns as &$column) {
                 if (!empty($column['heading'])) {
                     $column['heading'] = Craft::t($column['heading']);
+                }
+            }
+
+            // Watch out for Matrix
+            if ($this->model->context == 'global') {
+                if (is_array($tableData)) {
+                    $value = array_values($tableData);
+                }
+            } else {
+                if ($value) {
+                    $tableData = $value;
                 }
             }
 
@@ -173,9 +192,8 @@ class SetTableFieldType extends BaseFieldType
                 'id'     => $id,
                 'name'   => $name,
                 'cols'   => $columns,
-                'rows'   => $value,
+                'rows'   => $tableData,
             ));
         }
     }
-
 }
