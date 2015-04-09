@@ -186,7 +186,7 @@ class SetTableFieldType extends BaseFieldType
                 }
             }*/
 
-            if ($this->isFresh()) {
+            if (!$value) {
                 if (is_array($tableData)) {
                     $value = array_values($tableData);
                 }
