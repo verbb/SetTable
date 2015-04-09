@@ -112,7 +112,7 @@ class SetTableFieldType extends BaseFieldType
 
     public function prepValueFromPost($value)
     {
-        $settings = $this->getSettings();
+        /*$settings = $this->getSettings();
         $settings['tableData'] = $value;
         $this->setSettings($settings);
 
@@ -121,7 +121,7 @@ class SetTableFieldType extends BaseFieldType
         // Watch our for use in Matrix
         if ($this->model->context == 'global') {
             craft()->fields->saveField($this->model);
-        }
+        }*/
 
         if (is_array($value)) {
             // Drop the string row keys
@@ -176,13 +176,19 @@ class SetTableFieldType extends BaseFieldType
             }
 
             // Watch out for Matrix
-            if ($this->model->context == 'global') {
+            /*if ($this->model->context == 'global') {
                 if (is_array($tableData)) {
                     $value = array_values($tableData);
                 }
             } else {
                 if ($value) {
                     $tableData = $value;
+                }
+            }*/
+
+            if ($this->isFresh()) {
+                if (is_array($tableData)) {
+                    $value = array_values($tableData);
                 }
             }
 
@@ -192,7 +198,7 @@ class SetTableFieldType extends BaseFieldType
                 'id'     => $id,
                 'name'   => $name,
                 'cols'   => $columns,
-                'rows'   => $tableData,
+                'rows'   => $value,
             ));
         }
     }
