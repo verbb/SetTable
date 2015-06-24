@@ -1,0 +1,12 @@
+{
+    "name": "engram-design/SetTable",
+    "description": "A Craft CMS field type to allow you to create static tables.",
+    "authors": [{
+        "name": "S. Group",
+        "email": "joshua@sgroup.com.au"
+	}],
+    "type": "craft-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
