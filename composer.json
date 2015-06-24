@@ -1,11 +1,15 @@
 {
-    "name": "engram-design/SetTable",
+    "name": "engram-design/settable",
     "description": "A Craft CMS field type to allow you to create static tables.",
+    "homepage": "https://github.com/engram-design/SetTable",
+    "type": "craft-plugin",
+    "keywords": ["craft","plugin"],
+    "license": "MIT",
     "authors": [{
         "name": "S. Group",
         "email": "joshua@sgroup.com.au"
+        "homepage": "http://sgroup.com.au/",
 	}],
-    "type": "craft-plugin",
     "require": {
         "composer/installers": "~1.0"
     }
