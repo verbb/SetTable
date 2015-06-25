@@ -112,21 +112,7 @@ class SetTableFieldType extends BaseFieldType
 
     public function prepValueFromPost($value)
     {
-        /*$settings = $this->getSettings();
-        $settings['tableData'] = $value;
-        $this->setSettings($settings);
-
-        $this->model->settings = $settings;
-
-        // Watch our for use in Matrix
-        if ($this->model->context == 'global') {
-            craft()->fields->saveField($this->model);
-        }*/
-
-        if (is_array($value)) {
-            // Drop the string row keys
-            return array_values($value);
-        }
+        return $value;
     }
 
     public function prepValue($value)
@@ -175,20 +161,24 @@ class SetTableFieldType extends BaseFieldType
                 }
             }
 
-            // Watch out for Matrix
-            /*if ($this->model->context == 'global') {
-                if (is_array($tableData)) {
-                    $value = array_values($tableData);
+            // Minor fix for Backwards-compatibility - migrate old data into new key
+            foreach ($value as $key => $val) {
+                if (is_numeric($key)) {
+                    $value['row'.($key+1)] = $val;
+                    unset($value[$key]);
                 }
-            } else {
-                if ($value) {
-                    $tableData = $value;
-                }
-            }*/
+            }
 
             if (!$value) {
                 if (is_array($tableData)) {
-                    $value = array_values($tableData);
+                    $value = $tableData;
+                }
+            } else {
+                // Merge the saved existing values and any new rows
+                foreach ($tableData as $key => $val) {
+                    if (!isset($value[$key])) {
+                        $value[$key] = $val;
+                    }
                 }
             }
 
