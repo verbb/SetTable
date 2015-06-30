@@ -162,10 +162,12 @@ class SetTableFieldType extends BaseFieldType
             }
 
             // Minor fix for Backwards-compatibility - migrate old data into new key
-            foreach ($value as $key => $val) {
-                if (is_numeric($key)) {
-                    $value['row'.($key+1)] = $val;
-                    unset($value[$key]);
+            if ($value && is_array($value)) {
+                foreach ($value as $key => $val) {
+                    if (is_numeric($key)) {
+                        $value['row'.($key+1)] = $val;
+                        unset($value[$key]);
+                    }
                 }
             }
 
